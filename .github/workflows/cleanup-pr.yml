@@ -1,0 +1,19 @@
+name: Cleanup PR
+on:
+  pull_request:
+    types: [closed]
+    branches: master
+
+jobs:
+  delete-review-slot:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Azure login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_SUBSCRIPTION_SECRET }}
+  
+    - name: Create deployment slot
+      continue-on-error: true
+      run: |
+        az webapp deployment slot delete  --name popular-repos --slot review-pr-${{ github.event.number }}  --resource-group pied-piper-inc 
