@@ -27,7 +27,9 @@ jobs:
     needs: [build]
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    environment: staging
+    environment: 
+      name: staging
+      url: http://staging.int.github.com
 
     steps:
 
@@ -63,7 +65,9 @@ jobs:
     if: github.ref == 'refs/heads/main'
  
     runs-on: ubuntu-latest
-    environment: production
+    environment: 
+      name: production
+      url: http://www.github.com
 
     steps:
 
@@ -82,7 +86,9 @@ jobs:
     if: github.event_name == 'pull_request'
  
     runs-on: ubuntu-latest
-    environment: review
+    environment: 
+      name: review
+      url: http://review-23.lab.github.com
 
     steps:
 
