@@ -1,7 +1,8 @@
 <h1 align=center>Popular GitHub Repos by Language</h1>
 <p align=center>
-    <a href="https://github.com/pied-piper-inc/container-service-azure"><img alt="GitHub Actions status" src="https://github.com/pied-piper-inc/container-service-azure/workflows/CI/badge.svg?event=push"></a>
-
+    <a href="https://github.com/pied-piper-inc/universe-2020">
+        <img alt="GitHub Actions status" src="https://github.com/pied-piper-inc/universe-2020/actions/workflows/deploy.yml/badge.svg?event=push&branch=main">
+    </a>
  </p>
 
 # About
