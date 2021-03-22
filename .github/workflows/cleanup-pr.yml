@@ -2,7 +2,7 @@ name: Cleanup PR
 on:
   pull_request:
     types: [closed]
-    branches: master
+    branches: main
 
 jobs:
   delete-review-slot:
