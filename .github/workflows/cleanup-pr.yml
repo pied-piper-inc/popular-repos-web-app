@@ -4,6 +4,9 @@ on:
     types: [closed]
     branches: main
 
+permissions:
+  contents: read
+  
 jobs:
   delete-review-slot:
     runs-on: ubuntu-latest
