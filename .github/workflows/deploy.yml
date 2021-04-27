@@ -112,6 +112,7 @@ jobs:
     environment: 
       name: production
       url: https://popular-repos.azurewebsites.net
+    concurrency: production
     needs: deploy_to_staging
     steps:
     - name: Azure login
