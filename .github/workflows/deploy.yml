@@ -90,6 +90,7 @@ jobs:
     environment: 
       name: staging
       url: ${{ steps.popular-repos-web.outputs.webapp-url }}
+    concurrency: staging
     needs: build
     steps:
     - name: Azure login
