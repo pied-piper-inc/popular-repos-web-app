@@ -54,8 +54,8 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: ${{ secrets.AZURE_REGISTRY_NAME }}/popular-repos:${{ github.event.pull_request.head.sha || github.sha }}
-        cache-from: type=registry,ref=${{ secrets.AZURE_REGISTRY_NAME }}/popular-repos:latest
-        cache-to: type=inline
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
 
   deploy_to_review:
     name: Deploy Review
