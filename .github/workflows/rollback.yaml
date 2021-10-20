@@ -13,7 +13,7 @@ jobs:
     - uses: actions/github-script@v5
       with:
         script: |
-          const result = await octokit.request('GET /repos/{owner}/{repo}/deployments', {
+          const result = await github.request('GET /repos/{owner}/{repo}/deployments', {
                                   owner: context.repo.owner,
                                   repo: context.repo.repo
                                 })
