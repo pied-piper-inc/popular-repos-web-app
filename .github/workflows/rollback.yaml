@@ -10,25 +10,10 @@ jobs:
   rollback:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/github-script@v5
-      id: get-last-successful-deployment-sha
+    - uses: ./github/actions/get-last-successful-deployment
+      id: last-successful-deployment
       with:
-        script: |
-          const result = await github.request('GET /repos/{owner}/{repo}/deployments', {
-                                  owner: context.repo.owner,
-                                  repo: context.repo.repo
-                                })
-
-          const deployments = result.data.filter(deployment => deployment.environment === '${{ github.event.inputs.environment }}')
-          var last_successful_deployment = null;
-
-          for (const deployment of deployments) {
-            console.log(deployment.url)
-            const deployment_statuses = await github.request(deployment.statuses_url)
-            if(deployment_statuses.data[0].state === 'success') {
-              last_successful_deployment = deployment
-              break
-            }
-          }
-          console.log(last_successful_deployment)
-          return last_successful_deployment.sha
+        environment: ${{ github.event.inputs.environment }}
+    - run: |
+        echo ${{ steps.last-successful-deployment.outputs.deployment-sha}}
+        echo ${{ fromJSON(steps.last-successful-deployment.outputs.deployment) }}
