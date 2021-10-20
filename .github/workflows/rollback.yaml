@@ -29,5 +29,6 @@ jobs:
               last_successful_deployment = deployment
               break
             }
+          }
           console.log(last_successful_deployment)
           return last_successful_deployment.sha
