@@ -18,5 +18,5 @@ jobs:
                                   repo: context.repo.repo
                                 })
 
-          const filtered_result = result.data.filter(deployment => deployment.environment === ' ${{ github.event.inputs.environment }}')
+          const filtered_result = result.data.filter(deployment => deployment.environment === '${{ github.event.inputs.environment }}')
           console.log(filtered_result)
