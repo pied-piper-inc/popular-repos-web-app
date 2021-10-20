@@ -17,4 +17,4 @@ jobs:
         environment: ${{ github.event.inputs.environment }}
     - run: |
         echo ${{ steps.last-successful-deployment.outputs.deployment-sha}}
-        echo ${{ fromJSON(steps.last-successful-deployment.outputs.deployment) }}
+        echo ${{ toJSON(steps.last-successful-deployment.outputs.deployment) }}
