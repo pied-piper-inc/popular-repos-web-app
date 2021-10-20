@@ -1,0 +1,97 @@
+on:
+  workflow_call
+    inputs:
+      container-registry:
+        required: false
+        default: ghcr.io
+        type: string
+      container-image:
+        required: false
+        default: ${{ github.repository }}
+        type: string
+      resource-group:
+        required: false
+        default: ${{ github.repository_owner }}
+        type: string
+      web-app-name:
+        required: true
+        type: string
+      enable-review-apps:
+        required: false
+        default: 'true'
+        type: string
+    secrets:
+      azure-creds:
+        required: true
+    
+env:
+  REVIEW_IMAGE: '${{ inputs.container-registry }}/${{ inputs.container-image }}:${{ github.event.pull_request.head.sha }}'
+  IMAGE: '${{ inputs.container-registry }}/${{ inputs.container-image }}:${{ github.sha }}'
+
+jobs:
+  deploy_to_review:
+    name: Deploy Review
+    if: github.event_name == 'pull_request' && inputs.enable-review-apps == 'true'
+    runs-on: ubuntu-latest
+    environment: 
+      name: review-lab
+      url: ${{ steps.popular-repos-web.outputs.webapp-url }}
+    needs: build
+    steps:
+    - name: Azure login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.azure-creds }}
+
+    - name: Create deployment slot
+      run: |
+        az webapp deployment slot create --name ${{ inputs.web-app-name }} --resource-group ${{ inputs.resource-group }} --slot review-pr-${{ github.event.number }} --configuration-source ${{ inputs.web-app-name }}
+
+    - name: Deploy popular repos
+      uses: azure/webapps-deploy@v2
+      id: popular-repos-web
+      with:
+        app-name: '${{ inputs.web-app-name }}'
+        images: '${{ env.REVIEW_IMAGE }}'
+        slot-name: review-pr-${{ github.event.number }}
+
+  deploy_to_staging:
+    name: Deploy Staging
+    if: github.event.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: 
+      name: staging
+      url: ${{ steps.popular-repos-web.outputs.webapp-url }}
+    concurrency: staging
+    steps:
+    - name: Azure login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.azure-creds }}
+
+    - name: Deploy popular repos
+      uses: azure/webapps-deploy@v2
+      id: popular-repos-web
+      with:
+        app-name: '${{ inputs.web-app-name }}'
+        images: '${{ env.IMAGE }}'
+        slot-name: staging
+
+  deploy_to_production:
+    name: Deploy Production
+    if: github.event.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: 
+      name: production
+      url: https://${{ inputs.web-app-name }}.azurewebsites.net
+    concurrency: production
+    needs: deploy_to_staging
+    steps:
+    - name: Azure login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.azure-creds }}
+
+    - name: Swap staging to production
+      run: |
+        az webapp deployment slot swap --name ${{ inputs.web-app-name }} --resource-group ${{ inputs.resource-group }} --slot staging --target-slot production
