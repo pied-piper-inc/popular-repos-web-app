@@ -32,5 +32,5 @@ runs:
           }
         }
         core.debug(last_successful_deployment)
-        core.setOutput('deployment', last_successful_deployment)
-        core.setOutput(deployment-sha, last_successful_deployment.sha)
+        core.setOutput('deployment', JSON.stringify(last_successful_deployment))
+        core.setOutput('deployment-sha', last_successful_deployment.sha)
