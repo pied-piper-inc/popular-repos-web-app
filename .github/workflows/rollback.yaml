@@ -11,15 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/github-script@v5
-      env:
-        ROLLBACK_ENV: ${{ github.event.inputs.environment }}
       with:
         script: |
-          const {ROLLBACK_ENV} = process.env
           const result = await github.request('GET /repos/{owner}/{repo}/deployments', {
                                   owner: context.repo.owner,
                                   repo: context.repo.repo
                                 })
 
-          const filtered_result = result.data.filter(deployment => deployment.environment ==='${ROLLBACK_ENV}')
+          const filtered_result = result.data.filter(deployment => deployment.environment === ' ${{ github.event.inputs.environment }}')
           console.log(filtered_result)
