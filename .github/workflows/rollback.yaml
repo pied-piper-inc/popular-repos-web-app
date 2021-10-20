@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/github-script@v5
+      id: get-last-successful-deployment-sha
       with:
         script: |
           const result = await github.request('GET /repos/{owner}/{repo}/deployments', {
@@ -18,5 +19,15 @@ jobs:
                                   repo: context.repo.repo
                                 })
 
-          const filtered_result = result.data.filter(deployment => deployment.environment === '${{ github.event.inputs.environment }}')
-          console.log(filtered_result)
+          const deployments = result.data.filter(deployment => deployment.environment === '${{ github.event.inputs.environment }}')
+          var last_successful_deployment = null;
+
+          for (const deployment of deployments) {
+          console.log(deployment.url)
+          const deployment_statuses = await octokit.request(deployment.statuses_url)
+          if(deployment_statuses.data[0].state === 'success') {
+            last_successful_deployment = deployment
+            break
+          }
+          console.log(last_successful_deployment)
+          return last_successful_deployment.sha
