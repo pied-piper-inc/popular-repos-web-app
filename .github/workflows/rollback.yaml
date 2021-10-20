@@ -11,9 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/github-script@v5
+      env:
+        ROLLBACK_ENV: ${{ github.event.inputs.environment }}
       with:
-        env:
-          ROLLBACK_ENV: ${{ github.event.inputs.environment }}
         script: |
           const {ROLLBACK_ENV} = process.env
           const result = await github.request('GET /repos/{owner}/{repo}/deployments', {
