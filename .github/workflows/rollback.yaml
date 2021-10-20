@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: ./github/actions/get-last-successful-deployment
+    - uses: ./.github/actions/get-last-successful-deployment
       id: last-successful-deployment
       with:
         environment: ${{ github.event.inputs.environment }}
