@@ -1,4 +1,4 @@
-FROM node:12-slim
+FROM node:16-slim
 # Add `/node_modules/.bin` to $PATH
 ENV PATH /node_modules/.bin:$PATH
 RUN npm install -g http-server
