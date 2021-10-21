@@ -8,8 +8,9 @@ WORKDIR /app
 
 COPY ./dist .
 
-# Expose port 8080
-EXPOSE 8080
+# Expose port 80
+EXPOSE 80
+ENV 80
 
 # Start the web app
 CMD ["http-server"]
