@@ -11,6 +11,10 @@
     "build": "webpack --mode production",
     "start": "webpack-dev-server --open --mode development"
   },
+  "engines": {
+    "node": "^16.0.0",
+    "npm": "^7.0.0"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
