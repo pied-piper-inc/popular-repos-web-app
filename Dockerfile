@@ -10,7 +10,7 @@ COPY ./dist .
 
 # Expose port 80
 EXPOSE 80
-ENV 80
+ENV PORT 80
 
 # Start the web app
 CMD ["http-server"]
