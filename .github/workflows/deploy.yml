@@ -60,6 +60,8 @@ jobs:
   deploy_to_review:
     name: Deploy Review
     if: github.event_name == 'pull_request'
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
     environment: 
       name: review-lab
@@ -69,7 +71,9 @@ jobs:
     - name: Azure login
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_SUBSCRIPTION_SECRET }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Create deployment slot
       run: |
@@ -86,6 +90,8 @@ jobs:
   deploy_to_staging:
     name: Deploy Staging
     if: github.event.ref == 'refs/heads/main'
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
     environment: 
       name: staging
@@ -96,7 +102,9 @@ jobs:
     - name: Azure login
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_SUBSCRIPTION_SECRET }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Deploy popular repos
       uses: azure/webapps-deploy@v2
@@ -109,6 +117,8 @@ jobs:
   deploy_to_production:
     name: Deploy Production
     if: github.event.ref == 'refs/heads/main'
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
     environment: 
       name: production
@@ -119,7 +129,9 @@ jobs:
     - name: Azure login
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_SUBSCRIPTION_SECRET }}
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Swap staging to production
       run: |
