@@ -1,4 +1,4 @@
-FROM node:16-slim
+FROM node:17-slim
 # Add `/node_modules/.bin` to $PATH
 ENV PATH /node_modules/.bin:$PATH
 
