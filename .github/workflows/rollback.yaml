@@ -10,7 +10,7 @@ jobs:
   rollback:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: ./.github/actions/get-last-successful-deployment
       id: last-successful-deployment
       with:
