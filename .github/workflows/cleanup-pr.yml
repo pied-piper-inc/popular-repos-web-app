@@ -20,7 +20,7 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
   
-    - name: Create deployment slot
+    - name: Delete deployment slot
       continue-on-error: true
       run: |
         az webapp deployment slot delete  --name popular-repos --slot review-pr-${{ github.event.number }}  --resource-group pied-piper-inc
