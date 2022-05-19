@@ -7,4 +7,3 @@
 
 # About
 This repo demonstrates how you can orchestrate a continuous delivery process of a container based application to Azure WebApps using GitHub Actions.  It is intendended _for demonstration use only_.
-
