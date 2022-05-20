@@ -65,7 +65,7 @@ jobs:
     name: Deploy Review
     if: github.event_name == 'pull_request'
     needs: build
-    uses: ./.github/workflows/shared-deploy.yaml@main
+    uses: ./.github/workflows/shared-deploy.yaml
     with:
       app_name: popular-repos
       app_id: popular-repos-web
@@ -78,7 +78,7 @@ jobs:
     name: Deploy Staging
     if: github.event.ref == 'refs/heads/main'
     needs: build
-    uses: ./.github/workflows/shared-deploy.yaml@main
+    uses: ./.github/workflows/shared-deploy.yaml
     with:
       app_name: popular-repos
       app_id: popular-repos-web
@@ -91,7 +91,7 @@ jobs:
     name: Deploy Production
     if: github.event.ref == 'refs/heads/main'
     needs: deploy_to_staging
-    uses: ./.github/workflows/shared-deploy.yaml@main
+    uses: ./.github/workflows/shared-deploy.yaml
     with:
       app_name: popular-repos
       app_id: popular-repos-web
