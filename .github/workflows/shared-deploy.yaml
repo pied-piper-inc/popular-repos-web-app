@@ -60,12 +60,12 @@ jobs:
     - name: Deploy to staging
       if: inputs.environment_name == 'staging'
       uses: azure/webapps-deploy@v2
-      id: popular-repos-web
+      id: ${{ inputs.app_id }}
       with:
-        app-name: 'popular-repos'
+        app-name: ${{ inputs.app_name }}
         images: '${{ secrets.AZURE_REGISTRY_NAME }}/popular-repos:${{ inputs.sha }}'
-        slot-name: staging
-    
+        slot-name: ${{ inputs.environment_name }}
+        
     # Deploy to prod via a swap
     - name: Swap staging to production
       if: inputs.environment_name == 'production'
