@@ -52,7 +52,7 @@ jobs:
       run: az acr login --name ${{ secrets.AZURE_REGISTRY_NAME }} --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Build and push
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v3
       with:
         context: .
         file: ./Dockerfile
