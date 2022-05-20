@@ -41,13 +41,13 @@ jobs:
     
     # Create deployment slot for PR deployments
     - name: Create deployment slot
-      if: pr_number
+      if: pr_number != ''
       run: |
         az webapp deployment slot create --name popular-repos --resource-group pied-piper-inc --slot review-pr-${{ inputs.pr_number }} --configuration-source popular-repos
     
     # Deploy PR
     - name: Deploy pull request
-      if: pr_number
+      if: pr_number != ''
       uses: azure/webapps-deploy@v2
       id: ${{ inputs.app_id }}
       with:
