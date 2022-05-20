@@ -1,0 +1,74 @@
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        required: true
+        type: string
+      app_id:
+        required: true
+        type: string
+      environment_name:
+        required: true
+        type: string
+      environment_url:
+        required: true
+        type: string
+      pr_number:
+        required: false
+        type: string
+      sha:
+        required: true
+        type: string    
+
+    secrets: inherit
+
+jobs:
+  deploy_job:
+    permissions:
+      id-token: write
+    runs-on: ubuntu-latest
+    environment: 
+      name: ${{ inputs.environment_name }}
+      url: ${{ inputs.environment_url }}
+    
+    steps:
+    - name: Azure login
+      uses: azure/login@v1
+      with:
+        client-id: ${{ secrets.AZURE_CLIENT_ID }}
+        tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+        subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+    
+    # Create deployment slot for PR deployments
+    - name: Create deployment slot
+      if: pr_number != ''
+      run: |
+        az webapp deployment slot create --name popular-repos --resource-group pied-piper-inc --slot review-pr-${{ inputs.pr_number }} --configuration-source popular-repos
+    
+    # Deploy PR
+    - name: Deploy pull request
+      if: pr_number != ''
+      uses: azure/webapps-deploy@v2
+      id: ${{ inputs.app_id }}
+      with:
+        app-name: ${{ inputs.app_name }}
+        images: '${{ secrets.AZURE_REGISTRY_NAME }}/popular-repos:${{ inputs.sha }}'
+        slot-name: review-pr-${{ inputs.pr_number }}
+    
+    # Deploy staging
+    # How do we handle concurrency since it's need for staging but it's job level?
+    - name: Deploy to staging
+      if: inputs.environment_name == 'staging'
+      uses: azure/webapps-deploy@v2
+      id: ${{ inputs.app_id }}
+      with:
+        app-name: ${{ inputs.app_name }}
+        images: '${{ secrets.AZURE_REGISTRY_NAME }}/popular-repos:${{ inputs.sha }}'
+        slot-name: ${{ inputs.environment_name }}
+        
+    # Deploy to prod via a swap
+    - name: Swap staging to production
+      if: inputs.environment_name == 'production'
+      run: |
+        az webapp deployment slot swap --name popular-repos --resource-group pied-piper-inc --slot staging --target-slot production
+
