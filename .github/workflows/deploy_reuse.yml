@@ -63,6 +63,7 @@ jobs:
 
   deploy:
     name: Deploy App
+    needs: build
     uses: ./.github/workflows/shared-deploy.yaml
     with:
       app-name: popular-repos
