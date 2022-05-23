@@ -4,9 +4,6 @@ on:
       app-name:
         required: true
         type: string
-      app-id:
-        required: true
-        type: string  
       app-resource-group:
         required: true
         type: string
