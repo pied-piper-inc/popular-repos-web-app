@@ -61,41 +61,10 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
-  deploy_to_review:
-    name: Deploy Review
-    if: github.event_name == 'pull_request'
-    needs: build
+  deploy:
+    name: Deploy App
     uses: ./.github/workflows/shared-deploy.yaml
     with:
-      app_name: popular-repos
-      app_id: popular-repos-web
-      environment_name: review-lab
-      environment_url: ${{ steps.popular-repos-web.outputs.webapp-url }}
-      pr_number: github.event.number
-      sha: github.event.pull_request.head.sha
-
-  deploy_to_staging:
-    name: Deploy Staging
-    if: github.event.ref == 'refs/heads/main'
-    needs: build
-    uses: ./.github/workflows/shared-deploy.yaml
-    with:
-      app_name: popular-repos
-      app_id: popular-repos-web
-      environment_name: staging
-      environment_url: ${{ steps.popular-repos-web.outputs.webapp-url }}
-      pr_number: ''
-      sha: github.sha
-
-  deploy_to_production:
-    name: Deploy Production
-    if: github.event.ref == 'refs/heads/main'
-    needs: deploy_to_staging
-    uses: ./.github/workflows/shared-deploy.yaml
-    with:
-      app_name: popular-repos
-      app_id: popular-repos-web
-      environment_name: production
-      environment_url: https://popular-repos.azurewebsites.net
-      pr_number: ''
-      sha: github.sha
+      app-name: popular-repos
+      app-resource-group: pied-piper-inc
+ 
