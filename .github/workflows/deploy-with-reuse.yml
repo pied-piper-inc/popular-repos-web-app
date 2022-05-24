@@ -16,7 +16,7 @@ jobs:
       
   build-deploy:
     name: Deploy App
-    uses: ./.github/workflows/shared-deploy.yaml
+    uses: ./.github/workflows/shared-build-deploy.yaml
     with:
       app-name: popular-repos
       app-resource-group: pied-piper-inc
