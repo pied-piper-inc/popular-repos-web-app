@@ -61,9 +61,14 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
+  code-analysis:
+    uses: pied-piper-inc/workflows/.github/workflows/code-analysis.yml@main
+    with:
+      languages: 'javascript'
+      
   deploy:
     name: Deploy App
-    needs: build
+    needs: [build, code-analysis]
     uses: ./.github/workflows/shared-deploy.yaml
     with:
       app-name: popular-repos
