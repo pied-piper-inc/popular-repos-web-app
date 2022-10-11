@@ -1,4 +1,4 @@
-name: Deploy Site
+name: Deploy Site Reusable
 on:
   workflow_dispatch:
   pull_request:
