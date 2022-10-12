@@ -1,8 +1,6 @@
 <h1 align=center>Popular GitHub Repos by Language</h1>
 <p align=center>
-    <a href="https://github.com/pied-piper-inc/universe-2020">
-        <img alt="GitHub Actions status" src="https://github.com/pied-piper-inc/universe-2020/actions/workflows/deploy.yml/badge.svg?event=push&branch=main">
-    </a>
+   [![Deploy Site Reusable](https://github.com/pied-piper-inc/popular-repos-web-app/actions/workflows/deploy-with-reuse.yml/badge.svg?event=push)]   (https://github.com/pied-piper-inc/popular-repos-web-app/actions/workflows/deploy-with-reuse.yml)
  </p>
 
 # About
