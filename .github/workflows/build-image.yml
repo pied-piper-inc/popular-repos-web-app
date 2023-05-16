@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-xxl
     steps:
     - uses: actions/checkout@v3
-    - name: Setup node 12
+    - name: Setup node 14
       uses: actions/setup-node@v3.5.1
       with:
-        node-version: '12'
+        node-version: '14'
         cache: 'npm'
 
     - name: Install dependencies
