@@ -20,4 +20,5 @@ jobs:
     with:
       app-name: ${{ vars.AZURE_WEB_APP }}
       app-resource-group: ${{ vars.AZURE_RESOURCE_GROUP }}
+      AZURE_REGISTRY_NAME: ${{ vars.AZURE_REGISTRY_NAME }}
     secrets: inherit
