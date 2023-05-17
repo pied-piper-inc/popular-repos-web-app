@@ -18,6 +18,6 @@ jobs:
     name: Deploy App
     uses: ./.github/workflows/shared-build-deploy.yaml
     with:
-      app-name: ${{ variables.AZURE_WEB_APP }}
-      app-resource-group: ${{ variables.AZURE_RESOURCE_GROUP }}
+      app-name: ${{ vars.AZURE_WEB_APP }}
+      app-resource-group: ${{ vars.AZURE_RESOURCE_GROUP }}
     secrets: inherit
