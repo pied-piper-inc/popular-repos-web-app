@@ -10,7 +10,7 @@ on:
       
 jobs:
   code-analysis:
-    uses: pied-piper-inc/workflows/.github/workflows/code-analysis.yml@main
+    uses: bbq-beets/workflows/.github/workflows/code-analysis.yml@main
     with:
       languages: 'javascript'
       
@@ -18,6 +18,6 @@ jobs:
     name: Deploy App
     uses: ./.github/workflows/shared-build-deploy.yaml
     with:
-      app-name: popular-repos
-      app-resource-group: pied-piper-inc
+      app-name: ${{ variables.AZURE_WEB_APP }}
+      app-resource-group: ${{ variables.AZURE_RESOURCE_GROUP }}
     secrets: inherit
