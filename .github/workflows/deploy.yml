@@ -16,19 +16,12 @@ jobs:
       id-token: write
     steps:
     - uses: actions/checkout@v3
-    - name: Setup node 14
+    - name: Setup node 16
       uses: actions/setup-node@v3.5.1
       with:
-        node-version: '14.x'
-
-    - name: Cache node modules
-      id: cache-node
-      uses: actions/cache@v3
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+        node-version: '16.x'
+         # Used to specify a package manager for caching in the default directory.
+        cache: 'npm
 
     - name: Install dependencies
       if: steps.cache-node.outputs.cache-hit != 'true'
