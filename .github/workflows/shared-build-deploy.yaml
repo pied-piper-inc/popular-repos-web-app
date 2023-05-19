@@ -26,22 +26,14 @@ jobs:
       id-token: write
     steps:
     - uses: actions/checkout@v3
-    - name: Setup node 14
-      uses: actions/setup-node@v3.5.1
+    - name: Setup node 16
+      uses: actions/setup-node@v3
       with:
-        node-version: '14.x'
-
-    - name: Cache node modules
-      id: cache-node
-      uses: actions/cache@v3
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+        node-version: '16.x'
+        cache: npm
 
     - name: Install dependencies
-      if: steps.cache-node.outputs.cache-hit != 'true'
+      if: steps.setup-node.outputs.cache-hit != 'true'
       run: |
         npm install --silent
 
@@ -52,7 +44,7 @@ jobs:
       uses: docker/setup-buildx-action@v2
 
     - name: Azure login
-      uses: azure/login@v1.4.6
+      uses: azure/login@v1
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -83,7 +75,7 @@ jobs:
       url: ${{ steps.review-web.outputs.webapp-url }}
     steps:
     - name: Azure login
-      uses: azure/login@v1.4.6
+      uses: azure/login@v1
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
