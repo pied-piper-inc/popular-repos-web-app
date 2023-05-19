@@ -1,21 +1,31 @@
+# Display name of workflow
 name: Build Container Image
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI or API.
 on:
   workflow_dispatch:
   workflow_call:
       
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+   # This workflow contains a single job called "build"
   build:
     name: Build
-    runs-on: 
-      group: popular-repos-runner-group
+    
+     # The type of runner that the job will run on, in this case a Linux large hosted runner with 64 cores
+    runs-on: Ubuntu-large-runner
+      #group: popular-repos-runner-group
+    
+     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     - uses: actions/checkout@v3
-    - name: Setup node 14
+    - name: Setup node 16
       uses: actions/setup-node@v3.5.1
       with:
-        node-version: '14'
+        node-version: '16'
         cache: 'npm'
-
+    
+    # Runs a single command using the runners shell
     - name: Install dependencies
       run: |
         npm install --silent
