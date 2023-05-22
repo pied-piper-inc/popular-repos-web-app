@@ -50,7 +50,7 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ vars.AZURE_REGISTRY_NAME }}/popular-repos:${{ github.event.pull_request.head.sha || github.sha }}
+        tags: ${{ vars.AZURE_REGISTRY_NAME }}/${{ vars.AZURE_WEB_APP }}:${{ github.event.pull_request.head.sha || github.sha }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
@@ -81,7 +81,7 @@ jobs:
       id: popular-repos-web
       with:
         app-name: ${{ vars.AZURE_WEB_APP }}
-        images: '${{ vars.AZURE_REGISTRY_NAME }}/popular-repos:${{ github.event.pull_request.head.sha }}'
+        images: '${{ vars.AZURE_REGISTRY_NAME }}/${{ vars.AZURE_WEB_APP }}:${{ github.event.pull_request.head.sha }}'
         slot-name: review-pr-${{ github.event.number }}
 
   deploy_to_staging:
@@ -108,7 +108,7 @@ jobs:
       id: popular-repos-web
       with:
         app-name: ${{ vars.AZURE_WEB_APP }}
-        images: '${{ vars.AZURE_REGISTRY_NAME }}/popular-repos:${{ github.sha }}'
+        images: '${{ vars.AZURE_REGISTRY_NAME }}/${{ vars.AZURE_WEB_APP }}:${{ github.sha }}'
         slot-name: staging
 
   deploy_to_production:
