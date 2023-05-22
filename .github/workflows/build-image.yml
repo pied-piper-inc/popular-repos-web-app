@@ -27,6 +27,7 @@ jobs:
     
     # Runs a single command using the runners shell
     - name: Install dependencies
+      if: steps.setup-node.outputs.cache-hit != 'true'
       run: |
         npm install --silent
 
