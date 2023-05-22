@@ -13,7 +13,7 @@ jobs:
     name: Build
     
      # The type of runner that the job will run on, in this case a Linux large hosted runner with 64 cores
-    runs-on: Ubuntu-large-runner
+    runs-on: ubuntu-large-runner
       #group: popular-repos-runner-group
     
      # Steps represent a sequence of tasks that will be executed as part of the job
