@@ -10,12 +10,10 @@ on:
 jobs:
    # This workflow contains a single job called "build"
   build:
-    name: Build
+    name: Build on Standard Hosted Runner
     
      # The type of runner that the job will run on, in this case a Linux large hosted runner with 64 cores
-   # runs-on: ubuntu-latest
-    runs-on: ubuntu-large-runner
-      #group: popular-repos-runner-group
+    runs-on: ubuntu-latest
     
      # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -61,7 +59,7 @@ jobs:
         
   build_large_runner:
     
-    name: Build on Large Runner
+    name: Build on Large Hosted Runner
 
        # The type of runner that the job will run on, in this case a Linux large hosted runner with 64 cores
     runs-on: ubuntu-large-runner
