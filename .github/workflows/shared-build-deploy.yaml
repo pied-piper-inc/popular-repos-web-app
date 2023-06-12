@@ -26,7 +26,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Setup node 12
-      uses: actions/setup-node@v2-beta
+      uses: actions/setup-node@v3.5.1
       with:
         node-version: '12.x'
 
@@ -48,10 +48,10 @@ jobs:
       run:  npm run build
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2.2.1
 
     - name: Azure login
-      uses: azure/login@v1
+      uses: azure/login@v1.4.6
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -61,7 +61,7 @@ jobs:
       run: az acr login --name ${{ secrets.AZURE_REGISTRY_NAME }} --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Build and push
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v3.2.0
       with:
         context: .
         file: ./Dockerfile
@@ -82,7 +82,7 @@ jobs:
       url: ${{ steps.review-web.outputs.webapp-url }}
     steps:
     - name: Azure login
-      uses: azure/login@v1
+      uses: azure/login@v1.4.6
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -93,7 +93,7 @@ jobs:
         az webapp deployment slot create --name ${{ inputs.app-name }} --resource-group ${{ inputs.app-resource-group }} --slot review-pr-${{ github.event.number }} --configuration-source ${{ inputs.app-name }}
 
     - name: Deploy popular repos
-      uses: azure/webapps-deploy@v2
+      uses: azure/webapps-deploy@v2.2.3
       id: review-web
       with:
         app-name: ${{ inputs.app-name }}
@@ -113,14 +113,14 @@ jobs:
     concurrency: staging
     steps:
     - name: Azure login
-      uses: azure/login@v1
+      uses: azure/login@v1.4.6
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Deploy popular repos
-      uses: azure/webapps-deploy@v2
+      uses: azure/webapps-deploy@v2.2.3
       id: staging-web
       with:
         app-name: ${{ inputs.app-name }}
@@ -140,7 +140,7 @@ jobs:
     needs: deploy_to_staging
     steps:
     - name: Azure login
-      uses: azure/login@v1
+      uses: azure/login@v1.4.6
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
