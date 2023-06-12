@@ -7,14 +7,15 @@ on:
       app-resource-group:
         required: true
         type: string
+      AZURE_REGISTRY_NAME:
+        required: true
+        type: string
     secrets:
       AZURE_CLIENT_ID:
         required: true
       AZURE_TENANT_ID:
         required: true
       AZURE_SUBSCRIPTION_ID:
-        required: true
-      AZURE_REGISTRY_NAME:
         required: true
 
 jobs:
@@ -25,22 +26,14 @@ jobs:
       id-token: write
     steps:
     - uses: actions/checkout@v3
-    - name: Setup node 12
-      uses: actions/setup-node@v3.5.1
+    - name: Setup node 16
+      uses: actions/setup-node@v3
       with:
-        node-version: '12.x'
-
-    - name: Cache node modules
-      id: cache-node
-      uses: actions/cache@v3
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+        node-version: '16.x'
+        cache: npm
 
     - name: Install dependencies
-      if: steps.cache-node.outputs.cache-hit != 'true'
+      if: steps.setup-node.outputs.cache-hit != 'true'
       run: |
         npm install --silent
 
@@ -48,25 +41,25 @@ jobs:
       run:  npm run build
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2.2.1
+      uses: docker/setup-buildx-action@v2
 
     - name: Azure login
-      uses: azure/login@v1.4.6
+      uses: azure/login@v1
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Login to Container Registry
-      run: az acr login --name ${{ secrets.AZURE_REGISTRY_NAME }} --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      run: az acr login --name ${{ inputs.AZURE_REGISTRY_NAME }} --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Build and push
-      uses: docker/build-push-action@v3.2.0
+      uses: docker/build-push-action@v4
       with:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.AZURE_REGISTRY_NAME }}/${{ inputs.app-name }}:${{ github.event.pull_request.head.sha || github.sha }}
+        tags: ${{ inputs.AZURE_REGISTRY_NAME }}/${{ inputs.app-name }}:${{ github.event.pull_request.head.sha || github.sha }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
@@ -82,7 +75,7 @@ jobs:
       url: ${{ steps.review-web.outputs.webapp-url }}
     steps:
     - name: Azure login
-      uses: azure/login@v1.4.6
+      uses: azure/login@v1
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
@@ -97,7 +90,7 @@ jobs:
       id: review-web
       with:
         app-name: ${{ inputs.app-name }}
-        images: '${{ secrets.AZURE_REGISTRY_NAME }}/${{ inputs.app-name }}:${{ github.event.pull_request.head.sha }}'
+        images: '${{ inputs.AZURE_REGISTRY_NAME }}/${{ inputs.app-name }}:${{ github.event.pull_request.head.sha }}'
         slot-name: review-pr-${{ github.event.number }}
 
   deploy_to_staging:
@@ -113,18 +106,18 @@ jobs:
     concurrency: staging
     steps:
     - name: Azure login
-      uses: azure/login@v1.4.6
+      uses: azure/login@v1
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Deploy popular repos
-      uses: azure/webapps-deploy@v2.2.3
+      uses: azure/webapps-deploy@v2
       id: staging-web
       with:
         app-name: ${{ inputs.app-name }}
-        images: '${{ secrets.AZURE_REGISTRY_NAME }}/${{ inputs.app-name }}:${{ github.sha }}'
+        images: '${{ inputs.AZURE_REGISTRY_NAME }}/${{ inputs.app-name }}:${{ github.sha }}'
         slot-name: staging
 
   deploy_to_production:
@@ -140,7 +133,7 @@ jobs:
     needs: deploy_to_staging
     steps:
     - name: Azure login
-      uses: azure/login@v1.4.6
+      uses: azure/login@v1
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}

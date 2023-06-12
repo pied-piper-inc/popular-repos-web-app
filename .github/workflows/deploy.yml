@@ -16,22 +16,15 @@ jobs:
       id-token: write
     steps:
     - uses: actions/checkout@v3
-    - name: Setup node 14
+    - name: Setup node 16
       uses: actions/setup-node@v3.5.1
       with:
-        node-version: '14.x'
-
-    - name: Cache node modules
-      id: cache-node
-      uses: actions/cache@v3
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-
+        node-version: '16.x'
+         # Used to specify a package manager for caching in the default directory.
+        cache: 'npm
 
     - name: Install dependencies
-      if: steps.cache-node.outputs.cache-hit != 'true'
+      if: steps.setup-node.outputs.cache-hit != 'true'
       run: |
         npm install --silent
 
@@ -39,7 +32,7 @@ jobs:
       run:  npm run build
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+      uses: docker/setup-buildx-action@v2
 
     - name: Azure login
       uses: azure/login@v1
@@ -49,15 +42,15 @@ jobs:
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Login to Container Registry
-      run: az acr login --name ${{ secrets.AZURE_REGISTRY_NAME }} --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      run: az acr login --name ${{ vars.AZURE_REGISTRY_NAME }} --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
     - name: Build and push
-      uses: docker/build-push-action@v2
+      uses: docker/build-push-action@v4
       with:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.AZURE_REGISTRY_NAME }}/popular-repos:${{ github.event.pull_request.head.sha || github.sha }}
+        tags: ${{ vars.AZURE_REGISTRY_NAME }}/${{ vars.AZURE_WEB_APP }}:${{ github.event.pull_request.head.sha || github.sha }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
 
@@ -81,14 +74,14 @@ jobs:
 
     - name: Create deployment slot
       run: |
-        az webapp deployment slot create --name popular-repos --resource-group pied-piper-inc --slot review-pr-${{ github.event.number }} --configuration-source popular-repos
+        az webapp deployment slot create --name ${{ vars.AZURE_WEB_APP }} --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} --slot review-pr-${{ github.event.number }} --configuration-source ${{ vars.AZURE_WEB_APP }}
 
     - name: Deploy popular repos
       uses: azure/webapps-deploy@v2
       id: popular-repos-web
       with:
-        app-name: 'popular-repos'
-        images: '${{ secrets.AZURE_REGISTRY_NAME }}/popular-repos:${{ github.event.pull_request.head.sha }}'
+        app-name: ${{ vars.AZURE_WEB_APP }}
+        images: '${{ vars.AZURE_REGISTRY_NAME }}/${{ vars.AZURE_WEB_APP }}:${{ github.event.pull_request.head.sha }}'
         slot-name: review-pr-${{ github.event.number }}
 
   deploy_to_staging:
@@ -114,8 +107,8 @@ jobs:
       uses: azure/webapps-deploy@v2
       id: popular-repos-web
       with:
-        app-name: 'popular-repos'
-        images: '${{ secrets.AZURE_REGISTRY_NAME }}/popular-repos:${{ github.sha }}'
+        app-name: ${{ vars.AZURE_WEB_APP }}
+        images: '${{ vars.AZURE_REGISTRY_NAME }}/${{ vars.AZURE_WEB_APP }}:${{ github.sha }}'
         slot-name: staging
 
   deploy_to_production:
@@ -139,5 +132,5 @@ jobs:
 
     - name: Swap staging to production
       run: |
-        az webapp deployment slot swap --name popular-repos --resource-group pied-piper-inc --slot staging --target-slot production
+        az webapp deployment slot swap --name ${{ vars.AZURE_WEB_APP }} --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} --slot staging --target-slot production
 

@@ -23,4 +23,4 @@ jobs:
     - name: Delete deployment slot
       continue-on-error: true
       run: |
-        az webapp deployment slot delete  --name popular-repos --slot review-pr-${{ github.event.number }}  --resource-group pied-piper-inc
+        az webapp deployment slot delete  --name popular-repos --slot review-pr-${{ github.event.number }}  --resource-group ${{ vars.AZURE_RESOURCE_GROUP }}
