@@ -16,10 +16,11 @@ jobs:
       id-token: write
     steps:
     - uses: actions/checkout@v3
-    - name: Setup node 12
-      uses: actions/setup-node@v3.6.0
+    
+    - name: Setup node 14
+      uses: actions/setup-node@v3.6.00
       with:
-        node-version: '12.x'
+        node-version: '14.x'
 
     - name: Cache node modules
       id: cache-node
