@@ -24,7 +24,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup node 12
       uses: actions/setup-node@v3.5.1
       with:
